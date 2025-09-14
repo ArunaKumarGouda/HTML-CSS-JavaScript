@@ -1,0 +1,43 @@
+.timetable{
+            display: flex;
+            justify-content: center;
+        }
+        body{
+            text-align: center;
+        }
+        thead{
+            background-color: #e506e5;
+        }
+        .TIME{
+            background-color: rgb(206, 204, 204);
+        }
+        .MON{
+            background-color: rgb(206, 204, 204);
+        }
+        .TUE{
+            background-color: rgb(206, 204, 204);
+        }
+        .WED{
+            background-color: rgb(206, 204, 204);
+        }
+        .THU{
+            background-color: rgb(206, 204, 204);
+        }
+        .FRI{
+            background-color: rgb(206, 204, 204);
+        }
+        .SAT{
+            background-color: rgb(206, 204, 204);
+        }
+        .THEORY{
+            background-color: rgb(206, 204, 204);
+        }
+        .PRACTICAL{
+            background-color: rgb(206, 204, 204);
+        }
+        .SUBJECT{
+            background-color: rgb(169, 165, 165);
+        }
+        .NAME{
+            background-color: rgb(206, 204, 204);
+        }
