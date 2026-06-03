@@ -1,1 +1,7 @@
-styling here
+h2 {
+    color: aquamarine;
+    text-align: center;
+}
+body {
+    background-color: blue;
+}
