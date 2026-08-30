@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Speed Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-start: #0f172a;
+      --bg-end: #1e293b;
+      --surface: rgba(255,255,255,0.06);
+      --surface-strong: rgba(255,255,255,0.12);
+      --text-primary: #e2e8f0;
+      --text-muted: #cbd5e1;
+      --ring: rgba(34,211,238,0.35);
+      --accent-start: #22d3ee;
+      --accent-end: #06b6d4;
+      --good: #22c55e;
+      --bad: #ef4444;
+      --shadow-1: rgba(0,0,0,0.25);
+      --shadow-2: rgba(0,0,0,0.45);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(34,211,238,0.15), transparent 40%),
+                  radial-gradient(1000px 500px at 100% 0%, rgba(99,102,241,0.18), transparent 50%),
+                  linear-gradient(135deg, var(--bg-start), var(--bg-end));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: var(--text-primary);
+    }   
+
+    .game-container {
+      background: var(--surface);
+      width: 760px;
+      max-width: 92vw;
+      padding: 26px;
+      border-radius: 18px;
+      border: 1px solid var(--surface-strong);
+      box-shadow: 0 18px 48px var(--shadow-2);
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+
+    h1 {
+      margin-bottom: 6px;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 0 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .select, .btn, input {
+      font-family: inherit;
+    }
+
+    .select, input {
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+      border: 1px solid var(--surface-strong);
+      color: var(--text-primary);
+      border-radius: 10px;
+      box-shadow: 0 10px 26px var(--shadow-1);
+    }
+
+    .select {
+      padding: 10px 12px;
+    }
+
+    .metrics {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .sentence {
+      font-size: 20px;
+      line-height: 1.7;
+      margin: 16px 0;
+      color: var(--text-primary);
+      min-height: 72px;
+      text-align: left;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--surface-strong);
+      background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+    }
+
+    .word { opacity: 0.6; }
+    .word.active { opacity: 1; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 6px; }
+    .word.correct { color: var(--good); opacity: 1; }
+    .word.incorrect { color: var(--bad); opacity: 1; }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid var(--surface-strong);
+      margin-bottom: 14px;
+      color: var(--text-primary);
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+    }
+
+    .stats {
+      font-size: 16px;
+      margin: 8px 0 0 0;
+      color: var(--text-muted);
+    }
+
+    .btn {
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid var(--surface-strong);
+      border-radius: 10px;
+      cursor: pointer;
+      background: linear-gradient(180deg, #4f46e5, #0ea5e9);
+      color: #fff;
+      margin-top: 8px;
+      box-shadow: 0 10px 26px var(--shadow-1);
+      transition: transform 0.15s ease, box-shadow 0.25s ease, filter 0.2s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 16px 36px var(--shadow-2); filter: brightness(1.05); }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      color: #67e8f9;
+    }
+
+    .btn:focus-visible, .back-link:focus-visible, input:focus-visible, .select:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--ring); }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Typing Speed Test</h1>
+    <div class="controls">
+      <select id="duration" class="select">
+        <option value="60">1 Minute</option>
+        <option value="180">3 Minutes</option>
+        <option value="300">5 Minutes</option>
+      </select>
+      <button class="btn" id="restartBtn">Restart</button>
+    </div>
+    <div class="metrics">
+      <div id="timer">00:00</div>
+      <div id="liveWpm">WPM: 0</div>
+      <div id="liveAcc">Accuracy: 100%</div>
+    </div>
+    <div class="sentence" id="sentence">Loading...</div>
+    <input type="text" id="inputBox" placeholder="Start typing here..." autocomplete="off" />
+    <div class="stats" id="stats"></div>
+    <a href="../dashboard.html" class="back-link">⬅ Back to Dashboard</a>
+  </div>
+
+  <script>
+    const sentences = [
+      "The quick brown fox jumps over the lazy dog.",
+      "Learning to code can be fun and rewarding.",
+      "Practice makes perfect in every skill you learn.",
+      "Typing fast and accurately takes regular practice.",
+      "JavaScript is a versatile language for web development.",
+      "Challenges help you grow and improve your abilities.",
+      "Consistency and patience lead to steady improvement in typing speed.",
+      "Accurate typing is often more important than raw speed.",
+      "Breathe, relax your shoulders, and let your fingers find the keys.",
+      "Short daily practice beats long sporadic sessions." 
+    ];
+
+    const sentenceElement = document.getElementById("sentence");
+    
+    const inputBox = document.getElementById("inputBox");
+    const stats = document.getElementById("stats");
+    const durationSelect = document.getElementById("duration");
+    const timerEl = document.getElementById("timer");
+    const liveWpmEl = document.getElementById("liveWpm");
+    const liveAccEl = document.getElementById("liveAcc");
+    const restartBtn = document.getElementById("restartBtn");
+
+    let targetWords = [];
+    let currentIndex = 0;
+    let typedChars = 0;
+    let correctChars = 0;
+    let mistakes = 0;
+    let elapsed = 0;
+    let totalSeconds = 60;
+    let timerId = null;
+    let running = false;
+
+    function pickSentence() {
+      const text = sentences[Math.floor(Math.random() * sentences.length)];
+      return text.replace(/\s+/g, ' ').trim();
+    }
+
+    function renderWords() {
+      sentenceElement.innerHTML = targetWords
+        .map((w, i) => `<span class=\"word${i === currentIndex ? ' active' : ''}\">${w}</span>`) 
+        .join(' ');
+    }
+
+    function startTimer() {
+      clearInterval(timerId);
+      elapsed = 0;
+      timerId = setInterval(() => {
+        elapsed++;
+        const remaining = Math.max(totalSeconds - elapsed, 0);
+        const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
+        const ss = String(remaining % 60).padStart(2, '0');
+        timerEl.textContent = `${mm}:${ss}`;
+        updateLiveStats();
+        if (remaining <= 0) {
+          finishTest();
+        }
+      }, 1000);
+    }
+
+    function updateLiveStats() {
+      const minutes = Math.max(elapsed / 60, 0.0167); // avoid divide by zero
+      const wpm = Math.round((typedChars / 5) / minutes);
+      const accuracy = typedChars ? Math.max(0, Math.round((correctChars / Math.max(typedChars,1)) * 100)) : 100;
+      liveWpmEl.textContent = `WPM: ${wpm}`;
+      liveAccEl.textContent = `Accuracy: ${accuracy}%`;
+    }
+
+    function resetTest() {
+      running = true;
+      currentIndex = 0;
+      typedChars = 0;
+      correctChars = 0;
+      mistakes = 0;
+      inputBox.value = '';
+      stats.textContent = '';
+      inputBox.focus();
+      totalSeconds = parseInt(durationSelect.value, 10) || 60;
+      const mm = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+      const ss = String(totalSeconds % 60).padStart(2, '0');
+      timerEl.textContent = `${mm}:${ss}`;
+
+      // Build a long stream of words by concatenating random sentences
+      let corpus = '';
+      while (corpus.split(' ').length < 150) corpus += ' ' + pickSentence();
+      targetWords = corpus.trim().split(' ');
+      renderWords();
+      startTimer();
+    }
+
+    function finishTest() {
+      running = false;
+      clearInterval(timerId);
+      // Calculate final stats
+      const minutes = Math.max(elapsed / 60, 0.0167);
+      const wpm = Math.round((typedChars / 5) / minutes);
+      const accuracy = typedChars ? Math.max(0, Math.round((correctChars / Math.max(typedChars,1)) * 100)) : 100;
+      stats.textContent = `✅ Time's up! WPM: ${wpm} | Accuracy: ${accuracy}% | Keystrokes: ${typedChars} (Correct: ${correctChars}, Mistakes: ${mistakes})`;
+      // mark remaining as inactive
+      const nodes = sentenceElement.querySelectorAll('.word');
+      nodes.forEach(n => n.classList.remove('active'));
+    }
+
+    inputBox.addEventListener('input', () => {
+      if (!running) return;
+      const currentText = inputBox.value;
+      typedChars = typedChars + 1; // keystroke count
+      const target = targetWords[currentIndex] || '';
+      const words = sentenceElement.querySelectorAll('.word');
+
+      // Space means word attempt finished
+      if (currentText.endsWith(' ')) {
+        const attempt = currentText.trim();
+        if (attempt === target) {
+          correctChars += attempt.length + 1; // include space
+          words[currentIndex].classList.add('correct');
+        } else {
+          // count character-level correctness
+          const minLen = Math.min(attempt.length, target.length);
+          for (let i = 0; i < minLen; i++) if (attempt[i] === target[i]) correctChars++;
+          mistakes += Math.abs(target.length - attempt.length) + [...attempt].filter((c,i) => c !== target[i]).length - Math.max(0, target.length - attempt.length);
+          words[currentIndex].classList.add('incorrect');
+        }
+        words[currentIndex].classList.remove('active');
+        currentIndex++;
+        inputBox.value = '';
+        if (words[currentIndex]) words[currentIndex].classList.add('active');
+        updateLiveStats();
+        return;
+      }
+
+      // Live preview coloring per word (optional simple feedback)
+      const attempt = currentText;
+      if (!target) return;
+      const ok = target.startsWith(attempt);
+      words[currentIndex].classList.toggle('incorrect', !ok && attempt.length > 0);
+      words[currentIndex].classList.toggle('correct', ok && attempt.length === target.length);
+    });
+
+    // Restart button
+    restartBtn.addEventListener('click', resetTest);
+    durationSelect.addEventListener('change', resetTest);
+
+    // Start automatically
+    resetTest();
+  </script>
+</body>
+</html>
