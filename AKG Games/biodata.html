@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bio Data | Professional Form</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto; color:#e2e8f0;
+background: radial-gradient(1200px 600px at 10% -10%, rgba(34,211,238,0.15), transparent 40%), radial-gradient(1000px 500px at 100% 0%, rgba(99,102,241,0.18), transparent 50%), linear-gradient(135deg,#0f172a,#1e293b);} 
+.card{width:min(800px,94vw); background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:18px; box-shadow:0 18px 48px rgba(0,0,0,0.45); backdrop-filter:blur(8px); padding:20px;}
+.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.title{font-weight:700;letter-spacing:.3px}
+.back{color:#67e8f9;text-decoration:none;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;}
+.group{display:flex;flex-direction:column;gap:6px}
+label{font-weight:600;color:#cbd5e1}
+input,select{padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04));color:#e2e8f0;font-family:inherit}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.pill{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06)}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+button{padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);font-weight:700;cursor:pointer;background:linear-gradient(180deg,#4f46e5,#0ea5e9);color:#fff;box-shadow:0 10px 26px rgba(0,0,0,0.25)}
+button.secondary{background:linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04));color:#e2e8f0}
+.subtle{font-size:12px;color:#cbd5e1}
+.success{margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid rgba(34,197,94,0.35);background:rgba(34,197,94,0.15);color:#bbf7d0;font-weight:700;display:none}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="head">
+    <div class="title">Bio Data</div>
+    <a href="dashboard.html" class="back">⬅ Dashboard</a>
+  </div>
+  <form action="#" method="get">
+    <div class="grid">
+      <div class="group"><label for="firstName">First Name</label><input id="firstName" type="text" placeholder="Enter your first name" required></div>
+      <div class="group"><label for="middleName">Middle Name</label><input id="middleName" type="text" placeholder="Enter your middle name"></div>
+      <div class="group"><label for="lastName">Last Name</label><input id="lastName" type="text" placeholder="Enter your last name" required></div>
+      <div class="group"><label for="fatherName">Father's Name</label><input id="fatherName" type="text" placeholder="Enter your father's name" required></div>
+      <div class="group"><label for="motherName">Mother's Name</label><input id="motherName" type="text" placeholder="Enter your mother's name" required></div>
+      <div class="group"><label for="email">Email</label><input id="email" type="email" placeholder="Email" required></div>
+      <div class="group"><label for="password">Password</label><input id="password" type="password" placeholder="Password" required></div>
+      <div class="group"><label for="dob">Date of Birth</label><input id="dob" type="date" required></div>
+      <div class="group"><label for="tob">Time of Birth</label><input id="tob" type="time" required></div>
+      <div class="group"><label for="dt">Today Date & Time</label><input id="dt" type="datetime-local" required></div>
+      <div class="group"><label for="color">Favorite Color</label><input id="color" type="color"></div>
+      <div class="group"><label for="range">Range</label><input id="range" type="range"></div>
+      <div class="group"><label for="file">Upload File</label><input id="file" type="file"></div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <div class="group" style="min-width:220px">
+        <label>Gender</label>
+        <div class="row">
+          <label class="pill"><input type="radio" name="gender" value="male"> Male</label>
+          <label class="pill"><input type="radio" name="gender" value="female"> Female</label>
+          <label class="pill"><input type="radio" name="gender" value="other"> Other</label>
+        </div>
+      </div>
+      <div class="group" style="min-width:220px">
+        <label>Languages</label>
+        <div class="row">
+          <label class="pill"><input type="checkbox" name="lang" value="hindi"> Hindi</label>
+          <label class="pill"><input type="checkbox" name="lang" value="odia"> Odia</label>
+          <label class="pill"><input type="checkbox" name="lang" value="english"> English</label>
+          <label class="pill"><input type="checkbox" name="lang" value="other"> Other</label>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="reset" class="secondary">Reset</button>
+      <button type="submit">Submit</button>
+    </div>
+    <div class="subtle" style="margin-top:10px">By submitting, you confirm the details are correct.</div>
+  </form>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  var form = document.querySelector('form');
+
+  // Prefill from saved data if present
+  try {
+    var saved = JSON.parse(localStorage.getItem('biodata')||'null');
+    if (saved) {
+      var map = new Map(Object.entries(saved));
+      function setVal(id, val){ var el = document.getElementById(id); if (el && val!=null) el.value = val; }
+      setVal('firstName', map.get('firstName'));
+      setVal('middleName', map.get('middleName'));
+      setVal('lastName', map.get('lastName'));
+      setVal('fatherName', map.get('fatherName'));
+      setVal('motherName', map.get('motherName'));
+      setVal('email', map.get('email'));
+      setVal('password', map.get('password'));
+      setVal('dob', map.get('dob'));
+      setVal('tob', map.get('tob'));
+      setVal('dt', map.get('dt'));
+      setVal('color', map.get('color'));
+      setVal('range', map.get('range'));
+      // gender
+      if (map.get('gender')) {
+        var g = map.get('gender');
+        document.querySelectorAll('input[type="radio"][name="gender"]').forEach(function(r){ if (r.value===g) r.checked = true; });
+      }
+      // languages
+      if (Array.isArray(map.get('languages'))) {
+        var langs = map.get('languages');
+        document.querySelectorAll('input[type="checkbox"][name="lang"]').forEach(function(cb){ cb.checked = langs.includes(cb.value); });
+      }
+    }
+  } catch(_e){}
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    // Collect values
+    var data = {};
+    function getVal(id){ var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+    data.firstName = getVal('firstName');
+    data.middleName = getVal('middleName');
+    data.lastName = getVal('lastName');
+    data.fatherName = getVal('fatherName');
+    data.motherName = getVal('motherName');
+    data.email = getVal('email');
+    data.password = getVal('password');
+    data.dob = getVal('dob');
+    data.tob = getVal('tob');
+    data.dt = getVal('dt');
+    data.color = getVal('color');
+    data.range = getVal('range');
+    var gEl = document.querySelector('input[type="radio"][name="gender"]:checked');
+    data.gender = gEl ? gEl.value : '';
+    data.languages = Array.from(document.querySelectorAll('input[type="checkbox"][name="lang"]:checked')).map(function(cb){return cb.value});
+
+    localStorage.setItem('biodata', JSON.stringify(data));
+    window.location.href = 'page4_review.html';
+  });
+});
+</script>
+</body>
+</html>
