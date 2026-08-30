@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Endless Running Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-start: #0f172a;
+      --bg-end: #1e293b;
+      --surface: rgba(255,255,255,0.06);
+      --surface-strong: rgba(255,255,255,0.12);
+      --text-primary: #e2e8f0;
+      --text-muted: #cbd5e1;
+      --ring: rgba(34,211,238,0.35);
+      --accent-start: #22d3ee;
+      --accent-end: #06b6d4;
+      --shadow-1: rgba(0,0,0,0.25);
+      --shadow-2: rgba(0,0,0,0.45);
+      --ground-dirt: #3f2e1e;
+      --ground-foam: #4f3724;
+      --obstacle-1: #22c55e;
+      --obstacle-2: #16a34a;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(34,211,238,0.15), transparent 40%),
+                  radial-gradient(1000px 500px at 100% 0%, rgba(99,102,241,0.18), transparent 50%),
+                  linear-gradient(135deg, var(--bg-start), var(--bg-end));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      color: var(--text-primary);
+    }
+
+    .game-container {
+      position: relative;
+      width: 600px;
+      height: 400px;
+      background: var(--surface);
+      border: 1px solid var(--surface-strong);
+      overflow: hidden;
+      border-radius: 18px;
+      box-shadow: 0 18px 48px var(--shadow-2);
+      backdrop-filter: blur(8px);
+    }
+
+    .ground {
+      position: absolute;
+      bottom: 0;
+      width: 200%;
+      height: 88px;
+      background:
+        linear-gradient(180deg, var(--ground-foam), var(--ground-dirt)),
+        repeating-linear-gradient(
+          -45deg,
+          rgba(255,255,255,0.06) 0px,
+          rgba(255,255,255,0.06) 6px,
+          transparent 6px,
+          transparent 12px
+        );
+      animation: moveGround 2.6s linear infinite;
+    }
+
+    @keyframes moveGround { 0% { left: 0; } 100% { left: -100%; } }
+
+    .player {
+      position: absolute;
+      bottom: 88px;
+      left: 50px;
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+      border: 1px solid var(--surface-strong);
+      box-shadow: 0 12px 28px var(--shadow-1);
+      overflow: hidden;
+    }
+
+    .player img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none; /* shown when loaded */
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .obstacle {
+      position: absolute;
+      bottom: 88px;
+      width: 32px;
+      height: 52px;
+      background: linear-gradient(180deg, var(--obstacle-1), var(--obstacle-2));
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 10px;
+      z-index: 1;
+      box-shadow: 0 10px 24px var(--shadow-1);
+    }
+
+    .score-board {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      z-index: 3;
+      background: var(--surface);
+      border: 1px solid var(--surface-strong);
+      padding: 6px 12px;
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
+    }
+
+    .btn {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid var(--surface-strong);
+      border-radius: 10px;
+      cursor: pointer;
+      background: linear-gradient(180deg, #4f46e5, #0ea5e9);
+      color: #fff;
+      z-index: 3;
+      box-shadow: 0 10px 26px var(--shadow-1);
+      transition: transform 0.15s ease, box-shadow 0.25s ease, filter 0.2s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 16px 36px var(--shadow-2); filter: brightness(1.05); }
+
+    .back-link {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-weight: 700;
+      color: #67e8f9;
+      text-decoration: none;
+      z-index: 3;
+    }
+
+    .btn:focus-visible, .back-link:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--ring); }
+  </style>
+</head>
+<body>
+  <div class="game-container" id="gameContainer">
+    <div class="ground"></div>
+    <div class="player" id="player">
+      <img id="runnerImage" alt="Runner" />
+    </div>
+    <div class="score-board" id="score">Score: 0</div>
+    <button class="btn" onclick="restartGame()">Restart</button>
+    <a href="../dashboard.html" class="back-link">⬅ Dashboard</a>
+  </div>
+
+  <script>
+    const gameContainer = document.getElementById("gameContainer");
+    const player = document.getElementById("player");
+    const runnerImage = document.getElementById("runnerImage");
+    const scoreDisplay = document.getElementById("score");
+
+    let playerBottom = 88;
+    let isJumping = false;
+    let obstacles = [];
+    let score = 0;
+    let gameActive = true;
+
+    const gameWidth = 600;
+    const playerWidth = 56;
+
+    // Player jump
+    function jump() {
+      if (isJumping || !gameActive) return;
+      isJumping = true;
+      let jumpHeight = 0;
+      const jumpUp = setInterval(() => {
+        if (jumpHeight >= 150) {
+          clearInterval(jumpUp);
+          const fallDown = setInterval(() => {
+            if (jumpHeight <= 0) {
+              clearInterval(fallDown);
+              isJumping = false;
+              player.style.bottom = playerBottom + "px";
+            } else {
+              jumpHeight -= 10;
+              player.style.bottom = (playerBottom + jumpHeight) + "px";
+            }
+          }, 20);
+        } else {
+          jumpHeight += 10;
+          player.style.bottom = (playerBottom + jumpHeight) + "px";
+        }
+      }, 20);
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === " " || e.key === "ArrowUp") jump();
+    });
+
+    // Tap/click to jump (mobile)
+    gameContainer.addEventListener('touchstart', () => jump());
+    gameContainer.addEventListener('click', () => jump());
+
+    // Spawn obstacles continuously
+    function spawnObstacle() {
+      if (!gameActive) return;
+      const obstacle = document.createElement("div");
+      obstacle.classList.add("obstacle");
+      obstacle.style.left = gameWidth + "px";
+      gameContainer.appendChild(obstacle);
+      obstacles.push(obstacle);
+    }
+
+    // Move obstacles
+    function moveObstacles() {
+      if (!gameActive) return;
+      obstacles.forEach((obs, index) => {
+        let left = parseInt(obs.style.left);
+        obs.style.left = left - 6 + "px";
+
+        // Collision detection
+        const obsRight = left + 32;
+        const playerLeft = 50;
+        const playerRight = playerLeft + playerWidth;
+
+        if (
+          obsRight > playerLeft &&
+          left < playerRight &&
+          playerBottom < 138 &&
+          !isJumping
+        ) {
+          gameOver();
+        }
+
+        // Remove obstacles after leaving screen
+        if (left < -50) {
+          obs.remove();
+          obstacles.splice(index, 1);
+          score++;
+          scoreDisplay.textContent = "Score: " + score;
+        }
+      });
+    }
+
+    // Game over
+    function gameOver() {
+      gameActive = false;
+      clearInterval(gameLoop);
+      clearInterval(obstacleInterval);
+      alert("Game Over! Score: " + score);
+    }
+
+    // Restart game
+    function restartGame() {
+      obstacles.forEach(obs => obs.remove());
+      obstacles = [];
+      player.style.bottom = playerBottom + "px";
+      score = 0;
+      scoreDisplay.textContent = "Score: 0";
+      gameActive = true;
+      startGame();
+    }
+
+    // Game loop
+    let gameLoop, obstacleInterval;
+    function startGame() {
+      gameLoop = setInterval(moveObstacles, 20);
+      obstacleInterval = setInterval(spawnObstacle, 2000);
+    }
+
+    // Load a real runner image if available (place a runner.png next to this file)
+    (function loadRunnerImage() {
+      const localSrc = 'runner.png';
+      const fallbackSrc = 'https://pngimg.com/uploads/running/running_PNG61.png';
+      const testImg = new Image();
+      testImg.onload = function() {
+        runnerImage.src = localSrc;
+        runnerImage.style.display = 'block';
+      };
+      testImg.onerror = function() {
+        runnerImage.src = fallbackSrc;
+        runnerImage.style.display = 'block';
+      };
+      testImg.src = localSrc;
+    })();
+
+    startGame();
+  </script>
+</body>
+</html>
