@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Car Racing Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-start: #0f172a;
+      --bg-end: #1e293b;
+      --surface: rgba(255,255,255,0.06);
+      --surface-strong: rgba(255,255,255,0.12);
+      --text-primary: #e2e8f0;
+      --text-muted: #cbd5e1;
+      --ring: rgba(34,211,238,0.35);
+      --accent-start: #22d3ee;
+      --accent-end: #06b6d4;
+      --shadow-1: rgba(0,0,0,0.25);
+      --shadow-2: rgba(0,0,0,0.45);
+      --lane-line: rgba(255,255,255,0.9);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(34,211,238,0.15), transparent 40%),
+                  radial-gradient(1000px 500px at 100% 0%, rgba(99,102,241,0.18), transparent 50%),
+                  linear-gradient(135deg, var(--bg-start), var(--bg-end));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      color: var(--text-primary);
+    }
+
+    .game-container {
+      position: relative;
+      width: 400px;
+      height: 600px;
+      background: var(--surface);
+      border: 1px solid var(--surface-strong);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 18px 48px var(--shadow-2);
+      backdrop-filter: blur(8px);
+    }
+
+    .road {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #0a0a0a, #171717);
+      overflow: hidden;
+    }
+
+    /* Road center dashed line */
+    .road::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -100%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 300%;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          var(--lane-line),
+          var(--lane-line) 28px,
+          transparent 28px,
+          transparent 52px
+        );
+      filter: drop-shadow(0 0 4px rgba(255,255,255,0.4));
+      animation: moveLines 0.8s linear infinite;
+    }
+
+    @keyframes moveLines {
+      from { top: -100%; }
+      to { top: 0%; }
+    }
+
+    @keyframes moveRoad {
+      0% { top: 0; }
+      100% { top: -100%; }
+    }
+
+    .car {
+      position: absolute;
+      width: 56px;
+      height: 112px;
+      bottom: 24px;
+      left: 172px;
+      border-radius: 12px;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+      border: 1px solid var(--surface-strong);
+      box-shadow: 0 12px 28px var(--shadow-1);
+      overflow: hidden;
+    }
+
+    .car img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none; /* shown when loaded */
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .obstacle {
+      position: absolute;
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(180deg, #f59e0b, #d97706);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 10px;
+      z-index: 1;
+      box-shadow: 0 10px 24px var(--shadow-1);
+    }
+
+    .score-board {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 18px;
+      z-index: 3;
+      background: var(--surface);
+      border: 1px solid var(--surface-strong);
+      padding: 6px 12px;
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
+    }
+
+    .btn {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid var(--surface-strong);
+      border-radius: 10px;
+      cursor: pointer;
+      background: linear-gradient(180deg, #4f46e5, #0ea5e9);
+      color: #fff;
+      z-index: 3;
+      box-shadow: 0 10px 26px var(--shadow-1);
+      transition: transform 0.15s ease, box-shadow 0.25s ease, filter 0.2s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 16px 36px var(--shadow-2); filter: brightness(1.05); }
+
+    .back-link {
+      position: absolute;
+      top: 44px;
+      right: 12px;
+      color: #67e8f9;
+      font-weight: 700;
+      text-decoration: none;
+      z-index: 3;
+    }
+
+    .btn:focus-visible, .back-link:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--ring); }
+
+    .brand {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 3;
+      background: var(--surface);
+      border: 1px solid var(--surface-strong);
+      padding: 6px 10px;
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
+    }
+
+    .brand span {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-primary);
+      letter-spacing: 0.3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container" id="gameContainer">
+    <div class="road"></div>
+    <div class="brand" aria-label="Game brand">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M3 13l1.5-4.5A3 3 0 0 1 7.35 6h5.3c.98 0 1.87.57 2.3 1.46L16 9h3a2 2 0 0 1 2 2v2.5a1.5 1.5 0 0 1-1.5 1.5H19" fill="#ef4444"/>
+        <path d="M6 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm12 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" fill="#fee2e2"/>
+        <path d="M2 14h2m16 0h2M8 9h5" stroke="#991b1b" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span>Red Racer</span>
+    </div>
+    <div class="score-board" id="score">Score: 0</div>
+    <div class="car" id="car">
+      <img id="carImage" alt="Player car" />
+    </div>
+    <button class="btn" onclick="restartGame()">Restart</button>
+    <a href="../dashboard.html" class="back-link">⬅ Dashboard</a>
+  </div>
+
+  <script>
+    const gameContainer = document.getElementById("gameContainer");
+    const car = document.getElementById("car");
+    const carImage = document.getElementById("carImage");
+    const scoreDisplay = document.getElementById("score");
+
+    const gameWidth = 400;
+    const carWidth = 56;
+    let carPosition = (gameWidth - carWidth) / 2; // center by default
+    let obstacles = [];
+    let score = 0;
+    let gameActive = true;
+    let speed = 5; // base speed
+
+    // Car movement
+    document.addEventListener("keydown", (e) => {
+      if (!gameActive) return;
+      if (e.key === "ArrowLeft" && carPosition > 0) carPosition -= 20;
+      if (e.key === "ArrowRight" && carPosition < gameWidth - carWidth) carPosition += 20;
+      car.style.left = carPosition + "px";
+    });
+
+    // Touch controls (mobile)
+    gameContainer.addEventListener('touchstart', (e) => {
+      const touchX = e.touches[0].clientX - gameContainer.getBoundingClientRect().left;
+      carPosition = Math.max(0, Math.min(gameWidth - carWidth, touchX - carWidth / 2));
+      car.style.left = carPosition + 'px';
+    });
+
+    // Spawn obstacles
+    function spawnObstacle() {
+      if (!gameActive) return;
+      const obstacle = document.createElement("div");
+      obstacle.classList.add("obstacle");
+      obstacle.style.left = Math.floor(Math.random() * 7) * 50 + "px";
+      obstacle.style.top = "-60px";
+      gameContainer.appendChild(obstacle);
+      obstacles.push(obstacle);
+    }
+
+    // Move obstacles
+    function moveObstacles() {
+      if (!gameActive) return;
+      obstacles.forEach((obs, index) => {
+        let top = parseInt(obs.style.top);
+        obs.style.top = top + speed + "px";
+
+        // Collision detection
+        const obsLeft = parseInt(obs.style.left);
+        const obsRight = obsLeft + 52;
+        const carLeft = carPosition;
+        const carRight = carPosition + carWidth;
+        if (
+          top + 52 >= 500 &&
+          top <= 600 &&
+          ((carLeft < obsRight && carRight > obsLeft))
+        ) {
+          gameOver();
+        }
+
+        // Remove passed obstacles
+        if (top > 600) {
+          obs.remove();
+          obstacles.splice(index, 1);
+          score++;
+          scoreDisplay.textContent = "Score: " + score;
+          // Gradually increase speed
+          if (score % 5 === 0) speed = Math.min(speed + 0.5, 12);
+        }
+      });
+    }
+
+    // Game over
+    function gameOver() {
+      gameActive = false;
+      alert("Game Over! Your Score: " + score);
+      clearInterval(gameLoop);
+      clearInterval(obstacleSpawn);
+    }
+
+    // Restart game
+    function restartGame() {
+      obstacles.forEach(obs => obs.remove());
+      obstacles = [];
+      carPosition = (gameWidth - carWidth) / 2;
+      car.style.left = carPosition + "px";
+      score = 0;
+      scoreDisplay.textContent = "Score: 0";
+      gameActive = true;
+      speed = 5;
+      startGame();
+    }
+
+    // Game loop
+    function startGame() {
+      gameLoop = setInterval(moveObstacles, 30);
+      obstacleSpawn = setInterval(spawnObstacle, 1500);
+    }
+
+    // Load a real car image if available (place a car.png next to this file)
+    (function loadCarImage() {
+      const localSrc = 'car.png';
+      const fallbackSrc = 'https://images.unsplash.com/photo-1523986371872-9d3ba2e2f642?auto=format&fit=crop&w=300&q=60';
+      const testImg = new Image();
+      testImg.onload = function() {
+        carImage.src = localSrc;
+        carImage.style.display = 'block';
+      };
+      testImg.onerror = function() {
+        // Fallback to a hosted image
+        carImage.src = fallbackSrc;
+        carImage.style.display = 'block';
+      };
+      testImg.src = localSrc;
+    })();
+
+    // Init
+    startGame();
+  </script>
+</body>
+</html>
