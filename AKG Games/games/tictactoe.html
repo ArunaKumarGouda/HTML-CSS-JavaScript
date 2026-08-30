@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-start: #0f172a; /* slate-900 */
+      --bg-end: #1e293b;   /* slate-800 */
+      --surface: rgba(255,255,255,0.06);
+      --surface-strong: rgba(255,255,255,0.12);
+      --text-primary: #e2e8f0; /* slate-200 */
+      --text-muted: #cbd5e1;   /* slate-300 */
+      --ring: rgba(34,211,238,0.35);
+      --accent-start: #22d3ee; /* cyan-400 */
+      --accent-end: #06b6d4;   /* cyan-500 */
+      --x-color: #f97316;      /* orange-500 */
+      --o-color: #22c55e;      /* green-500 */
+      --shadow-1: rgba(0,0,0,0.25);
+      --shadow-2: rgba(0,0,0,0.45);
+    }
+
+    body {
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(34,211,238,0.15), transparent 40%),
+                  radial-gradient(1000px 500px at 100% 0%, rgba(99,102,241,0.18), transparent 50%),
+                  linear-gradient(135deg, var(--bg-start), var(--bg-end));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-primary);
+    }
+
+    .game-container {
+      text-align: center;
+      background: var(--surface);
+      border: 1px solid var(--surface-strong);
+      padding: 28px;
+      border-radius: 18px;
+      box-shadow: 0 18px 48px var(--shadow-2);
+      animation: fadeIn 0.7s ease-out;
+      backdrop-filter: blur(8px);
+    }
+
+    .game-container h1 {
+      margin-bottom: 8px;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 96px);
+      gap: 12px;
+      justify-content: center;
+      margin: 20px auto;
+    }
+
+    .cell {
+      width: 96px;
+      height: 96px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+      border: 1px solid var(--surface-strong);
+      border-radius: 14px;
+      font-size: 2.3rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: var(--text-primary);
+      box-shadow: 0 10px 26px var(--shadow-1);
+      transition: background 0.25s ease, transform 0.12s ease, box-shadow 0.25s ease;
+    }
+
+    .cell:hover {
+      background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.06));
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px var(--shadow-2);
+    }
+
+    .cell:active {
+      transform: translateY(0);
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .btn {
+      margin-top: 18px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      border: 1px solid var(--surface-strong);
+      border-radius: 10px;
+      cursor: pointer;
+      background: linear-gradient(180deg, #4f46e5, #0ea5e9);
+      color: #fff;
+      box-shadow: 0 10px 26px var(--shadow-1);
+      transition: transform 0.15s ease, box-shadow 0.25s ease, filter 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 36px var(--shadow-2);
+      filter: brightness(1.05);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 14px;
+      text-decoration: none;
+      font-weight: 700;
+      color: #67e8f9;
+    }
+
+    .cell[data-val="X"] { color: var(--x-color); }
+    .cell[data-val="O"] { color: var(--o-color); }
+
+    .btn:focus-visible, .back-link:focus-visible, .cell:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--ring);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .game-container { padding: 22px; }
+      .board { grid-template-columns: repeat(3, 84px); gap: 10px; }
+      .cell { width: 84px; height: 84px; font-size: 2rem; }
+      .game-container h1 { font-size: 22px; }
+      .status { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Tic Tac Toe</h1>
+    <div class="board" id="board"></div>
+    <div class="status" id="status">Player X's turn</div>
+    <button class="btn" onclick="resetGame()">Restart</button><br>
+    <a href="../dashboard.html" class="back-link">⬅ Back to Dashboard</a>
+  </div>
+
+  <script>
+    const board = document.getElementById("board");
+    const statusText = document.getElementById("status");
+    let cells = ["", "", "", "", "", "", "", "", ""];
+    let currentPlayer = "X";
+    let gameActive = true;
+
+    // Winning combinations
+    const winPatterns = [
+      [0,1,2], [3,4,5], [6,7,8], // rows
+      [0,3,6], [1,4,7], [2,5,8], // cols
+      [0,4,8], [2,4,6]           // diagonals
+    ];
+
+    // Create 9 cells
+    function createBoard() {
+      board.innerHTML = "";
+      cells.forEach((cell, index) => {
+        const div = document.createElement("div");
+        div.classList.add("cell");
+        div.dataset.index = index;
+        div.textContent = cell;
+        if (cell) div.setAttribute('data-val', cell);
+        div.addEventListener("click", handleClick);
+        board.appendChild(div);
+      });
+    }
+
+    // Handle cell click
+    function handleClick(e) {
+      const index = e.target.dataset.index;
+      if (cells[index] !== "" || !gameActive) return;
+
+      cells[index] = currentPlayer;
+      e.target.textContent = currentPlayer;
+      e.target.setAttribute('data-val', currentPlayer);
+
+      if (checkWinner()) {
+        statusText.textContent = `🎉 Player ${currentPlayer} Wins!`;
+        gameActive = false;
+        return;
+      }
+
+      if (!cells.includes("")) {
+        statusText.textContent = "🤝 It's a Draw!";
+        gameActive = false;
+        return;
+      }
+
+      currentPlayer = currentPlayer === "X" ? "O" : "X";
+      statusText.textContent = `Player ${currentPlayer}'s turn`;
+    }
+
+    // Check winner
+    function checkWinner() {
+      return winPatterns.some(pattern => {
+        return pattern.every(index => cells[index] === currentPlayer);
+      });
+    }
+
+    // Reset game
+    function resetGame() {
+      cells = ["", "", "", "", "", "", "", "", ""];
+      currentPlayer = "X";
+      gameActive = true;
+      statusText.textContent = "Player X's turn";
+      createBoard();
+    }
+
+    // Init game
+    createBoard();
+  </script>
+</body>
+</html>
