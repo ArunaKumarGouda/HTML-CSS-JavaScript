@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Resume</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2b5876, #4e4376);
+      color: #fff;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    header img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 5px solid #fff;
+      object-fit: contain;
+      box-shadow: 0px 6px 20px rgba(0,0,0,0.5);
+      background-color: #fff;
+    }
+
+    header h1 {
+      margin: 20px 0 10px;
+      font-size: 32px;
+    }
+
+    header p {
+      font-size: 18px;
+      color: #ddd;
+    }
+
+    section {
+      margin: 40px 0;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    section h2 {
+      margin-bottom: 15px;
+      font-size: 24px;
+      border-bottom: 2px solid #fff;
+      padding-bottom: 5px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      margin-bottom: 10px;
+      transition: transform 0.2s;
+    }
+
+    ul li:hover {
+      transform: translateX(8px);
+      color: #ffcc70;
+    }
+
+    /* Skills styling */
+    .skills span {
+      display: inline-block;
+      margin: 5px;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: #fff;
+    }
+    .skills span:nth-child(1) { background: #ff9966; }  /* Java */
+    .skills span:nth-child(2) { background: #1e90ff; }  /* Python */
+    .skills span:nth-child(3) { background: #32cd32; }  /* HTML */
+    .skills span:nth-child(4) { background: #ffcc00; color: #000; }  /* CSS */
+    .skills span:nth-child(5) { background: #ff5e62; }  /* JavaScript */
+    .skills span:nth-child(6) { background: #8a2be2; }  /* Machine Learning */
+    .skills span:nth-child(7) { background: #b22222; }  /* Data Structures & Algorithms */
+
+    .contact a {
+      color: #ffcc70;
+      text-decoration: none;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #ff9966, #ff5e62);
+      color: white;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: linear-gradient(135deg, #ff5e62, #ff9966);
+    }
+
+    .back-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      background: #1e90ff;
+      border: none;
+      border-radius: 20px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover {
+      background: #104e8b;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header / Profile -->
+    <header>
+      <img src="WhatsApp Image 2025-09-01 at 23.57.52_148fc73c.jpg" alt="Profile Picture">
+      <h1>Aruna Kumar Gouda</h1>
+      <p>Aspiring AIML Engineer | Java & Python Enthusiast | Web Developer</p>
+    </header>
+
+    <!-- About -->
+    <section>
+      <h2>About Me</h2>
+      <p>
+        I am an ambitious and detail-oriented Computer Science student specializing in 
+        <strong>Artificial Intelligence, Machine Learning, and Web Development</strong>. 
+        With strong foundations in <strong>Java, Python, and Data Structures & Algorithms</strong>, 
+        I enjoy solving complex problems and transforming ideas into scalable solutions. 
+        I am passionate about building innovative applications, contributing to open-source projects, 
+        and continuously learning emerging technologies to stay ahead in the tech industry.
+      </p>
+    </section>
+
+    <!-- Skills -->
+    <section class="skills">
+      <h2>Skills</h2>
+      <span>Java</span>
+      <span>Python</span>
+      <span>HTML</span>
+      <span>CSS</span>
+      <span>JavaScript</span>
+      <span>Machine Learning</span>
+      <span>Data Structures & Algorithms</span>
+    </section>
+
+    <!-- Education -->
+    <section>
+      <h2>Education</h2>
+      <ul>
+        <li><strong>Gandhi Institute for Education and Technology</strong>, Khurda, Bhubaneswar — B.Tech CSE (3rd Year, Ongoing)</li>
+        <li><strong>City College</strong>, Berhampur — Intermediate (2021 - 2023)</li>
+        <li><strong>Hadu Sarab Nodal High School</strong>, Badagada — Matriculation (Passing Year: 2021)</li>
+      </ul>
+    </section>
+
+    <!-- Projects -->
+    <section>
+      <h2>Projects</h2>
+      <ul>
+        <li><strong>Game Hub Dashboard</strong> – A web-based game hub with login system and multiple games.</li>
+        <li><strong>Car Racing Game</strong> – JavaScript-based fun racing game.</li>
+        <li><strong>Typing Test</strong> – Speed typing test with score tracking.</li>
+      </ul>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact">
+      <h2>Contact</h2>
+      <p>Email: <a href="mailto:arunakumargouda86@gmail.com">arunakumargouda86@gmail.com</a></p>
+      <p>Phone: +91 9510943736</p>
+      <p>LinkedIn: <a href="https://www.linkedin.com/in/aruna-kumar-gouda-3997b9359/" target="_blank">linkedin.com/in/aruna-kumar-gouda</a></p>
+      <p>GitHub: <a href="https://github.com/ArunaKumarGouda" target="_blank">github.com/ArunaKumarGouda</a></p>
+      <p>GeeksforGeeks: <a href="https://www.geeksforgeeks.org/user/arunakumargouda/" target="_blank">geeksforgeeks.org/user/arunakumargouda</a></p>
+      <p>LeetCode: <a href="https://leetcode.com/u/Aruna_Kumar_Gouda/" target="_blank">leetcode.com/u/Aruna_Kumar_Gouda</a></p>
+      <a href="resume.pdf" class="btn" download>📄 Download Resume</a>
+    </section>
+
+    <!-- Back Button -->
+    <button class="back-btn" onclick="window.location.href='dashboard.html'">⬅ Back to Dashboard</button>
+  </div>
+</body>
+</html>
