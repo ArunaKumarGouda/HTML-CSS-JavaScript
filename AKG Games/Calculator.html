@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scientific Calculator</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      color: white;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      text-align: center;
+      font-size: 32px;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      background: linear-gradient(180deg, #6a5acd, #1e90ff);
+      color: white;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.4);
+      transition: transform 0.2s, box-shadow 0.3s;
+      z-index: 10;
+    }
+
+    .back-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    }
+
+    .calculator {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+      width: 360px;
+      margin-top: 60px;
+    }
+
+    #display {
+      width: 100%;
+      height: 50px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      text-align: right;
+      font-size: 24px;
+      padding: 5px 10px;
+      color: white;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+
+    .buttons button {
+      padding: 15px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff9966, #ff5e62);
+      color: white;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .buttons button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+    }
+
+    .btn-operator { background: linear-gradient(135deg, #6a5acd, #1e90ff); }
+    .btn-clear { background: linear-gradient(135deg, #ff4b5c, #ff6f61); }
+    .btn-equal { background: linear-gradient(135deg, #00c6ff, #0072ff); grid-column: span 2; }
+  </style>
+</head>
+<body>
+  <!-- Back to Dashboard Button -->
+  <button class="back-btn" onclick="window.location.href='dashboard.html'">
+    <i class="fas fa-arrow-left"></i> Dashboard
+  </button>
+
+  <h1>🧮 Scientific Calculator</h1>
+  <div class="calculator">
+    <input type="text" id="display" readonly>
+
+    <div class="buttons">
+      <!-- Row 1 -->
+      <button class="btn-clear" onclick="clearDisplay()">C</button>
+      <button onclick="appendSymbol('(')">(</button>
+      <button onclick="appendSymbol(')')">)</button>
+      <button class="btn-operator" onclick="appendSymbol('/')">/</button>
+      <button class="btn-operator" onclick="appendSymbol('*')">*</button>
+
+      <!-- Row 2 -->
+      <button onclick="appendSymbol('7')">7</button>
+      <button onclick="appendSymbol('8')">8</button>
+      <button onclick="appendSymbol('9')">9</button>
+      <button class="btn-operator" onclick="appendSymbol('-')">-</button>
+      <button class="btn-operator" onclick="appendSymbol('+')">+</button>
+
+      <!-- Row 3 -->
+      <button onclick="appendSymbol('4')">4</button>
+      <button onclick="appendSymbol('5')">5</button>
+      <button onclick="appendSymbol('6')">6</button>
+      <button onclick="appendSymbol('^')">^</button>
+      <button onclick="appendSymbol('√')">√</button>
+
+      <!-- Row 4 -->
+      <button onclick="appendSymbol('1')">1</button>
+      <button onclick="appendSymbol('2')">2</button>
+      <button onclick="appendSymbol('3')">3</button>
+      <button onclick="appendSymbol('%')">%</button>
+      <button onclick="appendSymbol('!')">!</button>
+
+      <!-- Row 5 -->
+      <button onclick="appendSymbol('0')">0</button>
+      <button onclick="appendSymbol('.')">.</button>
+      <button class="btn-equal" onclick="calculateResult()">=</button>
+
+      <!-- Scientific functions -->
+      <button onclick="appendSymbol('degSin(')">sin</button>
+      <button onclick="appendSymbol('degCos(')">cos</button>
+      <button onclick="appendSymbol('degTan(')">tan</button>
+      <button onclick="appendSymbol('Math.log10(')">log</button>
+      <button onclick="appendSymbol('Math.log(')">ln</button>
+
+      <button onclick="appendSymbol('Math.exp(')">exp</button>
+      <button onclick="appendSymbol('Math.PI')">π</button>
+      <button onclick="appendSymbol('Math.E')">e</button>
+    </div>
+  </div>
+
+<script>
+  const display = document.getElementById('display');
+
+  function appendSymbol(symbol) {
+    display.value += symbol;
+  }
+
+  function clearDisplay() {
+    display.value = '';
+  }
+
+  function calculateResult() {
+    let exp = display.value;
+
+    try {
+      // Convert √ to Math.sqrt
+      exp = exp.replace(/√/g, 'Math.sqrt');
+      // Factorial
+      exp = exp.replace(/(\d+)!/g, (_, n) => factorial(Number(n)));
+      // Exponentiation
+      exp = exp.replace(/(\d+)\^(\d+)/g, (_, a, b) => `Math.pow(${a},${b})`);
+      
+      // Evaluate
+      display.value = eval(exp);
+    } catch (e) {
+      display.value = 'Error';
+    }
+  }
+
+  function factorial(n) {
+    if(n < 0) return NaN;
+    if(n === 0 || n === 1) return 1;
+    let result = 1;
+    for(let i = 2; i <= n; i++) result *= i;
+    return result;
+  }
+
+  // Trig functions in degrees
+  function degSin(x) { return Math.sin(x * Math.PI / 180); }
+  function degCos(x) { return Math.cos(x * Math.PI / 180); }
+  function degTan(x) { return Math.tan(x * Math.PI / 180); }
+</script>
+</body>
+</html>
