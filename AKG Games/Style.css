@@ -1,0 +1,33 @@
+body {
+    background-color:aqua;
+    color:red;
+    background-image: url('hd-nature.jpg');
+    background-attachment: fixed;
+}
+#a{
+    text-align: center; 
+    color: blue; 
+    text-decoration:underline double;
+}
+#b{
+    text-align: center; 
+    color: red;
+    text-decoration:underline
+}
+#m{
+    color:green;
+    text-decoration:underline dotted;
+}
+#n{
+    color:green;
+    text-decoration:underline dotted;
+}
+.game-container {
+      position: relative;
+      width: 400px;
+      height: 600px;
+      background: #444;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0px 8px 20px rgba(0,0,0,0.5);
+    }
